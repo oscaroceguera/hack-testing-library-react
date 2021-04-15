@@ -7,6 +7,12 @@ describe('App', () => {
   test('renders App component', () => {
     render(<App />);
 
-    screen.debug()
+    // inplicita asercion
+    // por que getByText puede mandar error
+    // y el elemento no pobria estar
+    // screen.getByText('Search:')
+
+    // explicita asercion, titnenque ser identico con mayusculas
+    expect(screen.getByText('Search:')).toBeInTheDocument();
   });
 });

@@ -128,3 +128,31 @@ function Search({ value, onChange, children }) {
 
 export default App;
 ```
+
+# 3 - React Testing Library: Selecting Elements
+
+tag: 3-selecting-elements
+
+- Una vez renderizado el componente, RTL ofrece diferentes funciones de busqueda para capturar elementos.
+- Esos elementos se utilizan luego para afirmaciones o interacciones de usuarios, vamos a ver como:
+
+```javascript
+import React from "react";
+import { render, screen } from "@testing-library/react";
+
+import App from "./App";
+
+describe("App", () => {
+  test("renders App component", () => {
+    render(<App />);
+
+    screen.getByText("Search:");
+  });
+});
+```
+
+- Agreguemos una asercion para verificar el elemento en el DOM
+
+```javascript
+expect(screen.getByText("Search:")).toBeInTheDocument();
+```
