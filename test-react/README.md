@@ -196,3 +196,36 @@ describe("OtherComponent", () => {
   });
 });
 ```
+
+# 5 - React Testing Library: Search Variants
+
+tag: 5-search-variants
+
+- A diferencia de los tipos de busqueda y tambien existen variantes de tipo de búsqueda.
+- Una de las variantes es getBy que se usa para getByText o getByRole.
+- Existen otras dos variantes de busqueda que son queryBy y findBy (ambas pueden ampliarse con los mismos tipos de búsqueda a los que tienen acceso getBy) por ejemplo (diapo)
+- Cual es la diferencia entre getBy vs queryBy?
+  - getBy devuelve un elemento o un error, que devuelva error es un efecto secundario que nos ayuda a notar tempranamente si algo esta mal en nuestra prueba.
+  - queryBy variante se usa cada vez que afirme que un elemento no esta alli
+  - findBy variante se usa para elementos asincronos que eventualmente estaran allí (el componente se actualiza y se vuelve a rendizar y luego la representacion condicional deberia representar "Signed in as")
+
+```javascript
+import React from "react";
+import { render, screen } from "@testing-library/react";
+
+import App from "./App";
+
+describe("App", () => {
+  test("renders App component", async () => {
+    render(<App />);
+
+    // primero solo depues agregar el screen.findByText
+    expect(screen.queryByText(/Signed in as/)).toBeNull();
+    // activar al ultimo
+    screen.debug();
+    expect(await screen.findByText(/Signed in as/)).toBeInTheDocument();
+    // activar al ultimo
+    screen.debug();
+  });
+});
+```
