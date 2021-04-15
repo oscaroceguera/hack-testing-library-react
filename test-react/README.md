@@ -315,3 +315,36 @@ describe("App", () => {
   });
 });
 ```
+
+# 7 - React Testing Library: User Event
+
+tag: 7-user-event
+
+- RTL viene con una biblioteca de User event extendida que se acumula sobre el API fireEvent.
+- fireEvent activva interacciones del usuario y podemos reemplazarla por UserEvent para poder desencadenar type.
+- fireEvent funcinoa con change y userEvent con type (esto ayuda para usar keyDown, KeyPress y KeyUp)
+
+```javascript
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+ 
+import App from './App';
+ s
+describe('App', () => {
+  test('renders App component', async () => {
+    render(<App />);
+ 
+    // wait for the user to resolve
+    await screen.findByText(/Signed in as/);
+ 
+    expect(screen.queryByText(/Searches for JavaScript/)).toBeNull();
+ 
+    await userEvent.type(screen.getByRole('textbox'), 'JavaScript');
+ 
+    expect(
+      screen.getByText(/Searches for JavaScript/)
+    ).toBeInTheDocument();
+  });
+});
+```
