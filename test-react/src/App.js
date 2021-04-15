@@ -25,6 +25,7 @@ function Search({ value, onChange, children }) {
       <input
         id="search"
         type="text"
+        placeholder='Search'
         value={value}
         onChange={onChange}
       />

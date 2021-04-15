@@ -156,3 +156,43 @@ describe("App", () => {
 ```javascript
 expect(screen.getByText("Search:")).toBeInTheDocument();
 ```
+
+# 4 - React Testing Library: Search Types
+
+tag: 4-search-types
+
+- Hemos aprendido acerca de getByText donde text es uno de los varios tipos de búqueda.
+- buscar por text es de los mas comunes otro fuerte es el role getByRole https://testing-library.com/docs/queries/byrole
+- getByRole se usa para recuperar elementos por atributos aria-label y valores implicitos en los elementos HTML.
+
+```javascript
+const OtherComponent = () => {
+  return (
+    <div>
+      <label htmlFor="search">Buscar</label>
+      <input
+        id="search"
+        type="text"
+        placeholder="Search placeholder"
+        value="Javascript"
+        onChange={(f) => f}
+      />
+    </div>
+  );
+};
+
+describe("OtherComponent", () => {
+  test("renders OtherComponent component", async () => {
+    render(<OtherComponent />);
+
+    // LabelText
+    expect(screen.getByLabelText("Buscar")).toBeInTheDocument();
+    // PlaceholderText
+    expect(
+      screen.getByPlaceholderText("Search placeholder")
+    ).toBeInTheDocument();
+    // DisplayValuev
+    expect(screen.getByDisplayValue("Javascript")).toBeInTheDocument();
+  });
+});
+```
