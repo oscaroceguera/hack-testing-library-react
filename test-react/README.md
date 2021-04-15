@@ -417,3 +417,100 @@ describe("Search", () => {
   });
 });
 ```
+
+# 9 - React Testing Library: Asynchronous/Async
+
+tag: 9-asynchronous-async
+
+- install axios
+- Probaremos ahora la obtencion de datos en react, testiando un comp que usa axios para obtener datos de una API remota
+
+```javascript
+import React from "react";
+import axios from "axios";
+
+const URL = "http://hn.algolia.com/api/v1/search";
+
+function App() {
+  const [stories, setStories] = React.useState([]);
+  const [error, setError] = React.useState(null);
+
+  async function handleFetch(event) {
+    let result;
+
+    try {
+      result = await axios.get(`${URL}?query=React`);
+
+      setStories(result.data.hits);
+    } catch (error) {
+      setError(error);
+    }
+  }
+
+  return (
+    <div>
+      <button type="button" onClick={handleFetch}>
+        Fetch Stories
+      </button>
+
+      {error && <span>Something went wrong ...</span>}
+
+      <ul>
+        {stories.map((story) => (
+          <li key={story.objectID}>
+            <a href={story.url}>{story.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+```
+
+```javascript
+import React from "react";
+import axios from "axios";
+import { render, screen, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import App from "./App";
+
+jest.mock("axios");
+
+describe("App", () => {
+  test("fetches stories from an API and displays them", async () => {
+    const stories = [
+      { objectID: "1", title: "Hello" },
+      { objectID: "2", title: "React" },
+    ];
+
+    axios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: { hits: stories } })
+    );
+
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button"));
+
+    const items = await screen.findAllByRole("listitem");
+
+    expect(items).toHaveLength(2);
+  });
+
+  test("fetches stories from an API and fails", async () => {
+    axios.get.mockImplementationOnce(() => Promise.reject(new Error()));
+
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button"));
+
+    const message = await screen.findByText(/Something went wrong/);
+
+    expect(message).toBeInTheDocument();
+  });
+});
+```
+
+FUENTE: https://www.robinwieruch.de/react-testing-library
