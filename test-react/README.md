@@ -229,3 +229,89 @@ describe("App", () => {
   });
 });
 ```
+
+- Para acceder a miltiples elememntos existen (todos devuelven un array de elementos):
+  - getAllBy
+  - queryAllBy
+  - findAllBy
+
+## Assertive Functions (ver en el diap) https://github.com/testing-library/jest-dom
+
+# 6 - React Testing Library: Fire Event
+
+tag: 6-fire-event
+
+- hasta aqui solo hemos probado si un elemento es renderizado.
+
+- Que pasa con las intereacciones reales del usuario:
+
+  - Escribir en un input
+  - podemos usar la funcion fireEvent de RTL para simular interacciones de un usuario final.
+
+```javascript
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+
+import App from "./App";
+
+describe("App", () => {
+  test("renders App component", () => {
+    render(<App />);
+
+    screen.debug();
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "JavaScript" },
+    });
+
+    screen.debug();
+  });
+});
+```
+
+- FireEvent toma un elemento y un evento.
+- Si el comp esta involucarado en una tarea asincrona se espera ah que concluya
+
+```javascript
+describe("App", () => {
+  test("renders App component", async () => {
+    render(<App />);
+
+    // wait for the user to resolve
+    // needs only be used in our special case
+    await screen.findByText(/Signed in as/);
+
+    screen.debug();
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "JavaScript" },
+    });
+
+    screen.debug();
+  });
+});
+```
+
+- Posteriormente, podemos hacer las afirmaciones de antes y después del evento:
+
+```javascript
+describe("App", () => {
+  test("renders App component", async () => {
+    render(<App />);
+
+    // wait for the user to resolve
+    // needs only be used in our special case
+    await screen.findByText(/Signed in as/);
+
+    // para eso usamos findQuery
+    expect(screen.queryByText(/Searches for JavaScript/)).toBeNull();
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "JavaScript" },
+    });
+
+    // para eso usamos findQuery
+    expect(screen.getByText(/Searches for JavaScript/)).toBeInTheDocument();
+  });
+});
+```

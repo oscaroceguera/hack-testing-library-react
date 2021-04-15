@@ -1,18 +1,22 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
- 
-import App from './App';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
 
-describe('App', () => {
-  test('renders App component', async () => {
+import App from "./App";
+
+describe("App", () => {
+  test("renders App component", () => {
     render(<App />);
-    
-    // primero sin findByText
-    expect(screen.queryByText(/Signed in as/)).toBeNull();
-    // activar al ultimo
-    screen.debug()
-    expect(await screen.findByText(/Signed in as/)).toBeInTheDocument();
-    // activar al ultimo
-    screen.debug()
+
+    // wait for the user to resolve
+    // needs only be used in our special case
+    // await screen.findByText(/Signed in as/);
+
+    screen.debug();
+
+    fireEvent.change(screen.getByRole("textbox"), {
+      target: { value: "JavaScript" },
+    });
+
+    screen.debug();
   });
 });
